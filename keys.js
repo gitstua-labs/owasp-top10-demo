@@ -7,7 +7,13 @@ const app = express();
 
 app.use(express.text({type: 'text/plain'}))
 app.post('/keys', function(req, res) {
-    const unserialized = keys.unserialize(req.body);
+    let parsedBody;
+    try {
+        parsedBody = JSON.parse(req.body);
+    } catch (e) {
+        return res.status(400).send('Invalid JSON');
+    }
+    const unserialized = keys.unserialize(parsedBody);
     res.end('keys are ' + Object.keys(unserialized));
 });
 
